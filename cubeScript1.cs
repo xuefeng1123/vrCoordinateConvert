@@ -17,7 +17,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         // Update is called once per frame
         void Update()
         {
-            changePosition();
+            // changePosition();
         }
 
         void changePosition()
@@ -142,7 +142,6 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
                     handler.TransformOverride = CustomTrackedObject.transform;
                 }
             }
-            LogGazeDirectionOrigin();
         }
 
         private void DestroySolver()
