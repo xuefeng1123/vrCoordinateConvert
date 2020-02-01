@@ -12,17 +12,29 @@ public class GizmoLeftScript : MonoBehaviour
     static bool _continue = true;
     //private GameObject CustomTrackedObject = null;
     static string objectName = "GizmoLeft";
+    static string focusName = "focus";
+    GameObject GizmoLeft = null;
+    Rigidbody rb = null;
+    GameObject Focus = null;
 
     // Start is called before the first frame update
     void Start()
     {
         printIMUMessage();
+        initGameObject();
     }
 
     private void Update()
     {
         Read();
-        System.Threading.Thread.Sleep(10); //1 second
+        // System.Threading.Thread.Sleep(10); //1 second
+    }
+
+    public void initGameObject()
+    {
+        GizmoLeft = GameObject.Find(objectName);
+        rb = GizmoLeft.GetComponent<Rigidbody>();
+        Focus = GameObject.Find(focusName);
     }
 
 
@@ -35,7 +47,6 @@ public class GizmoLeftScript : MonoBehaviour
     void initIMU()
     {
         string name;
-        string message;
         StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
         // Thread readThread = new Thread(Read);
 
@@ -81,25 +92,48 @@ public class GizmoLeftScript : MonoBehaviour
                 //    index++;
                 //}
                 
-                changeGizmoLeft(new Vector3(Convert.ToSingle(data[3]), Convert.ToSingle(data[4]), Convert.ToSingle(data[5])));
-                // Debug.Log(GameObject.Find(objectName).transform.rotation);
+                changeGizmoLeftRotation(new Vector3(Convert.ToSingle(data[3]), Convert.ToSingle(data[4]), Convert.ToSingle(data[5])));
+                // changeGizmoLeftPosition(new Vector3(Convert.ToSingle(data[0]), Convert.ToSingle(data[1]), Convert.ToSingle(data[2])));
+                changeFocusPosition();
             }
         }
             catch (TimeoutException) { }
         // }
     }
 
-    public void changeGizmoLeft(Vector3 vector)
+    public void changeGizmoLeftRotation(Vector3 vector)
     {
-        GameObject CustomTrackedObject = GameObject.Find(objectName);
-        if (CustomTrackedObject != null)
+        if (GizmoLeft != null)
         {
-            Quaternion q = Quaternion.LookRotation(CustomTrackedObject.transform.position - vector);
-            // Quaternion.Slerp(self.rotation, q, turnSpeed * Time.deltaTime);
-            // Quaternion q1 = new Quaternion(1, 2, 3, 4);
-            CustomTrackedObject.transform.rotation = Quaternion.Slerp(CustomTrackedObject.transform.rotation, q, Convert.ToSingle(0.5) * Time.time);  // 可以把 t * Time.time 理解成速度 * 时间 等于角位移
-            Debug.Log(CustomTrackedObject.transform.rotation);
+            Quaternion q = Quaternion.LookRotation(GizmoLeft.transform.position - vector);
+            GizmoLeft.transform.rotation = Quaternion.Slerp(GizmoLeft.transform.rotation, q, Convert.ToSingle(0.5) * Time.time);  // 可以把 t * Time.time 理解成速度 * 时间 等于角位移
         }
     }
 
+    public void changeGizmoLeftPosition(Vector3 vector)
+    {
+        //rb = GizmoLeft.GetComponent<Rigidbody>();
+        //if(rb != null)
+        //{
+        //    rb.MovePosition(GizmoLeft.transform.position + vector);
+        //}
+        Debug.Log("-------------------------------------------");
+        Debug.Log("vector:   " + vector);
+        Debug.Log("position: " + GizmoLeft.transform.position);
+        // GizmoLeft.transform.position = GizmoLeft.transform.position + vector;
+    }
+
+    public void changeFocusPosition()
+    {
+        //rb = GizmoLeft.GetComponent<Rigidbody>();
+        //if(rb != null)
+        //{
+        //    rb.MovePosition(GizmoLeft.transform.position + vector);
+        //}
+        // Debug.Log("-------------------------------------------");
+        // Debug.Log("vector:   " + vector);
+        // Debug.Log("position: " + GizmoLeft.transform.position);
+        Focus.transform.position = GizmoLeft.transform.forward * 0.5f;
+        Debug.Log(Focus.transform.position);
+    }
 }
