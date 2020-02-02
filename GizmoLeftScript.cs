@@ -125,15 +125,26 @@ public class GizmoLeftScript : MonoBehaviour
 
     public void changeFocusPosition()
     {
-        //rb = GizmoLeft.GetComponent<Rigidbody>();
-        //if(rb != null)
-        //{
-        //    rb.MovePosition(GizmoLeft.transform.position + vector);
-        //}
-        // Debug.Log("-------------------------------------------");
-        // Debug.Log("vector:   " + vector);
-        // Debug.Log("position: " + GizmoLeft.transform.position);
-        Focus.transform.position = GizmoLeft.transform.forward * 0.5f;
-        Debug.Log(Focus.transform.position);
+        Focus.transform.position = GizmoLeft.transform.forward * 0.9f;
+        changeFocusRotation();
+    }
+
+    public void changeFocusRotation()
+    {
+        Vector3 headRotation = GizmoLeft.transform.forward;
+        Vector3 headPosition = GizmoLeft.transform.position;
+
+        //无视与第五层的碰撞，focus本身就在检测路线上
+        int layerMask = 1 << 5;
+        layerMask = ~layerMask;
+
+        RaycastHit raycastHit; //储存选中物体
+        if (Physics.Raycast(headPosition, headRotation, out raycastHit, 100.0f, layerMask))
+        {
+            Focus.GetComponent<Renderer>().material.color = Color.red;
+            Focus.transform.position = raycastHit.point;
+            Focus.transform.rotation = Quaternion.FromToRotation(Vector3.up, raycastHit.normal);
+            Debug.Log(Focus.transform.rotation);
+        }
     }
 }
