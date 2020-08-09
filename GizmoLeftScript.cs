@@ -27,7 +27,11 @@ public class GizmoLeftScript : MonoBehaviour
     private void Update()
     {
         Read();
-        // System.Threading.Thread.Sleep(10); //1 second
+        System.Threading.Thread.Sleep(10); //1 second
+        //Debug.Log("InputLocation:" + Input.mousePosition);
+        //Debug.Log("屏幕坐标转世界坐标：" + Camera.main.ScreenToWorldPoint(new Vector3(1,1,1)));
+        //Debug.Log("世界坐标屏幕坐标：" + Camera.main.WorldToScreenPoint(new Vector3(1, 1, 1)));
+
     }
 
     public void initGameObject()
@@ -84,16 +88,7 @@ public class GizmoLeftScript : MonoBehaviour
                     // Debug.Log(message);
                 string[] data = Regex.Split(message, "\\s+", RegexOptions.IgnoreCase);//\s表示匹配任何空白字符,+表示匹配一次或多次
                 
-                //数组size = 7, 最后一个项为空
-                //int index = 0;
-                //foreach (string i in data)
-                //{
-                //    Debug.Log(index + i);
-                //    index++;
-                //}
-                
                 changeGizmoLeftRotation(new Vector3(Convert.ToSingle(data[3]), Convert.ToSingle(data[4]), Convert.ToSingle(data[5])));
-                // changeGizmoLeftPosition(new Vector3(Convert.ToSingle(data[0]), Convert.ToSingle(data[1]), Convert.ToSingle(data[2])));
                 changeFocusPosition();
             }
         }
@@ -108,19 +103,6 @@ public class GizmoLeftScript : MonoBehaviour
             Quaternion q = Quaternion.LookRotation(GizmoLeft.transform.position - vector);
             GizmoLeft.transform.rotation = Quaternion.Slerp(GizmoLeft.transform.rotation, q, Convert.ToSingle(0.5) * Time.time);  // 可以把 t * Time.time 理解成速度 * 时间 等于角位移
         }
-    }
-
-    public void changeGizmoLeftPosition(Vector3 vector)
-    {
-        //rb = GizmoLeft.GetComponent<Rigidbody>();
-        //if(rb != null)
-        //{
-        //    rb.MovePosition(GizmoLeft.transform.position + vector);
-        //}
-        Debug.Log("-------------------------------------------");
-        Debug.Log("vector:   " + vector);
-        Debug.Log("position: " + GizmoLeft.transform.position);
-        // GizmoLeft.transform.position = GizmoLeft.transform.position + vector;
     }
 
     public void changeFocusPosition()
